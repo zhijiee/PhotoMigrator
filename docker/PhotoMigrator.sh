@@ -35,10 +35,21 @@ fi
 CURRENT_DIR="$(pwd)"
 
 echo "🐳 Pulling Docker image: jaimetur/photomigrator:${RELEASE_TAG}"
-docker pull "jaimetur/photomigrator:${RELEASE_TAG}"
+if ! docker pull "jaimetur/photomigrator:${RELEASE_TAG}"; then
+  echo "❌ Failed to pull image 'jaimetur/photomigrator:${RELEASE_TAG}'."
+  exit 1
+fi
 
 echo "🚀 Launching container with TAG='${RELEASE_TAG}' and TZ='${TZ}'..."
 docker run -it --rm \
   -v "$CURRENT_DIR":/docker \
   -e TZ="${TZ}" \
   "jaimetur/photomigrator:${RELEASE_TAG}" "$@"
+
+exit_code=$?
+if [ "$exit_code" -ne 0 ]; then
+  echo "❌ PhotoMigrator container exited with code ${exit_code}."
+  echo "ℹ️  Tip: run 'docker ps -a' and 'docker logs <container_id>' for details."
+fi
+
+exit "$exit_code"
