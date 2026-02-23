@@ -808,9 +808,9 @@ def parallel_automatic_migration(
             LOGGER.info(f"CPU Total Cores Detected = {cpu_total_threads}")
             num_pull_threads = 1  # no Iniciar más de 1 hilo de descarga, de lo contrario los assets se descargarán multiples veces.
             LOGGER.info(f"Launching {num_pull_threads} Pull worker in parallel...")
-            calculated_push_workers = max(1, int(cpu_total_threads * 2))
+            calculated_push_workers = 4
             max_push_workers = _get_env_positive_int(
-                "PHOTOMIGRATOR_MAX_PUSH_WORKERS", 8
+                "PHOTOMIGRATOR_MAX_PUSH_WORKERS", 4
             )
             num_push_threads = max(1, min(calculated_push_workers, max_push_workers))
             LOGGER.info(
